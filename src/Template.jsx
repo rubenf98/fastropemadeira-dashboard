@@ -5,7 +5,13 @@ import styles from "./Template.module.css";
 function Template() {
   return (
     <div className={styles.container}>
-      <Outlet className={styles.content} />
+      <section className={styles.content}>
+        <div className={styles.header}>
+          <h2>Painel de Controlo</h2>
+          <img src="/vite.svg" alt="" />
+        </div>
+        <Outlet />
+      </section>
       <Navbar />
     </div>
   );

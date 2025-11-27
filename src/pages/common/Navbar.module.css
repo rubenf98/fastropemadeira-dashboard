@@ -7,6 +7,9 @@
     padding: 20px;
     box-sizing: border-box;
     background-color: #242424;
+    position: sticky;
+    bottom: 0;
+    left: 0;
 
     a {
         color: white;
