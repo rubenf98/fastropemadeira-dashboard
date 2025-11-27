@@ -1,0 +1,7 @@
+export const types = {
+    FETCH_CHATS: 'FETCH_CHATS',
+    FETCH_CHAT: 'FETCH_CHAT',
+    DELETE_CHAT: 'DELETE_CHAT',
+    UPDATE_CHAT: 'UPDATE_CHAT',
+    CREATE_CHAT: 'CREATE_CHAT',
+};
