@@ -86,8 +86,12 @@ function Tracker() {
       </div>
 
       <section className={styles.options}>
-        <button className={styles.income}>Add Income</button>
-        <button className={styles.expense}>Add Expense</button>
+        <Link to="/tracker/income">
+          <button className={styles.income}>Add Income</button>
+        </Link>
+        <Link to="/tracker/expense">
+          <button className={styles.expense}>Add Expense</button>
+        </Link>
       </section>
 
       <section className={styles.transactions}>

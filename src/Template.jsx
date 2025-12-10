@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet } from "react-router";
+import { Link, Outlet } from "react-router";
 import Navbar from "./pages/common/Navbar";
 import styles from "./Template.module.css";
 function Template() {
@@ -8,7 +8,9 @@ function Template() {
       <section className={styles.content}>
         <div className={styles.header}>
           <h2>Painel de Controlo</h2>
-          <img src="/vite.svg" alt="" />
+          <Link to="/dashboard">
+            <img src="/vite.svg" alt="logo" />
+          </Link>
         </div>
         <Outlet />
       </section>
