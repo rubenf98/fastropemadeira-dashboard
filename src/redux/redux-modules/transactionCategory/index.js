@@ -10,32 +10,32 @@ export const initialState = {
 
 export default (state = initialState, action = {}) => {
     switch (action.type) {
-        case `${types.DELETE_SPEAKER}_PENDING`:
-        case `${types.CREATE_SPEAKER}_PENDING`:
-        case `${types.UPDATE_SPEAKER}_PENDING`:
-        case `${types.FETCH_SPEAKERS}_PENDING`:
-        case `${types.FETCH_SPEAKER}_PENDING`:
+        case `${types.DELETE_TRANSACTION_CATEGORY}_PENDING`:
+        case `${types.CREATE_TRANSACTION_CATEGORY}_PENDING`:
+        case `${types.UPDATE_TRANSACTION_CATEGORY}_PENDING`:
+        case `${types.FETCH_TRANSACTION_CATEGORIES}_PENDING`:
+        case `${types.FETCH_TRANSACTION_CATEGORY}_PENDING`:
             return {
                 ...state,
                 loading: true,
             };
 
-        case `${types.UPDATE_SPEAKER}_REJECTED`:
-        case `${types.DELETE_SPEAKER}_REJECTED`:
-        case `${types.CREATE_SPEAKER}_REJECTED`:
+        case `${types.UPDATE_TRANSACTION_CATEGORY}_REJECTED`:
+        case `${types.DELETE_TRANSACTION_CATEGORY}_REJECTED`:
+        case `${types.CREATE_TRANSACTION_CATEGORY}_REJECTED`:
             return {
                 ...state,
                 loading: false,
             };
 
-        case `${types.CREATE_SPEAKER}_FULFILLED`:
+        case `${types.CREATE_TRANSACTION_CATEGORY}_FULFILLED`:
             return {
                 ...state,
                 loading: false,
                 data: [action.payload.data.data, ...state.data]
             };
 
-        case `${types.DELETE_SPEAKER}_FULFILLED`:
+        case `${types.DELETE_TRANSACTION_CATEGORY}_FULFILLED`:
             return {
                 ...state,
                 loading: false,
@@ -44,7 +44,7 @@ export default (state = initialState, action = {}) => {
                 )
             };
 
-        case `${types.UPDATE_SPEAKER}_FULFILLED`:
+        case `${types.UPDATE_TRANSACTION_CATEGORY}_FULFILLED`:
             return {
                 ...state,
                 loading: false,
@@ -56,26 +56,26 @@ export default (state = initialState, action = {}) => {
                 )
             };
 
-        case `${types.FETCH_SPEAKER}_REJECTED`:
+        case `${types.FETCH_TRANSACTION_CATEGORY}_REJECTED`:
             return {
                 ...state,
                 loading: false,
                 current: {},
             };
-        case `${types.FETCH_SPEAKERS}_REJECTED`:
+        case `${types.FETCH_TRANSACTION_CATEGORIES}_REJECTED`:
             return {
                 ...state,
                 loading: false,
                 data: []
             };
-        case `${types.FETCH_SPEAKER}_FULFILLED`:
+        case `${types.FETCH_TRANSACTION_CATEGORY}_FULFILLED`:
             return {
                 ...state,
                 loading: false,
                 current: action.payload.data.data,
             };
 
-        case `${types.FETCH_SPEAKERS}_FULFILLED`:
+        case `${types.FETCH_TRANSACTION_CATEGORIES}_FULFILLED`:
             return {
                 ...state,
                 loading: false,

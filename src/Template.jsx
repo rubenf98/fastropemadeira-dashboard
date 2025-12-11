@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, Outlet } from "react-router";
 import Navbar from "./pages/common/Navbar";
 import styles from "./Template.module.css";
-function Template() {
+import { useNavigate } from "react-router";
+import { connect } from "react-redux";
+
+function Template(props) {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!props.isAuthenticated) {
+      // navigate("/");
+    }
+  }, [props.isAuthenticated]);
+
   return (
     <div className={styles.container}>
       <section className={styles.content}>
@@ -19,4 +30,10 @@ function Template() {
   );
 }
 
-export default Template;
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.auth.isAuthenticated,
+  };
+};
+
+export default connect(mapStateToProps, null)(Template);

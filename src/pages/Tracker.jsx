@@ -1,98 +1,62 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./Tracker.module.css";
 import { Link } from "react-router";
+import TrackerGraph from "./TrackerGraph";
+import { connect } from "react-redux";
+import { fetchTransactions } from "../redux/redux-modules/transaction/actions";
+import { fetchTrackers } from "../redux/redux-modules/tracker/actions";
 
-const transactions = [
-  // Example transaction data
-  {
-    id: 1,
-    image: "/vite.svg",
-    type: "income",
-    amount: 100,
-    category: "Salary",
-    subcategory: "Monthly",
-    date: "2023-10-01",
-  },
-  {
-    id: 2,
-    image: "/vite.svg",
-    type: "expense",
-    amount: 50,
-    category: "Groceries",
-    subcategory: "Monthly",
-    date: "2023-10-01",
-  },
-  {
-    id: 1,
-    image: "/vite.svg",
-    type: "income",
-    amount: 100,
-    category: "Salary",
-    subcategory: "Monthly",
-    date: "2023-10-01",
-  },
-  {
-    id: 2,
-    image: "/vite.svg",
-    type: "expense",
-    amount: 50,
-    category: "Groceries",
-    subcategory: "Monthly",
-    date: "2023-10-01",
-  },
-  {
-    id: 1,
-    image: "/vite.svg",
-    type: "income",
-    amount: 100,
-    category: "Salary",
-    subcategory: "Monthly",
-    date: "2023-10-01",
-  },
-  {
-    id: 2,
-    image: "/vite.svg",
-    type: "expense",
-    amount: 50,
-    category: "Groceries",
-    subcategory: "Monthly",
-    date: "2023-10-01",
-  },
-  {
-    id: 1,
-    image: "/vite.svg",
-    type: "income",
-    amount: 100,
-    category: "Salary",
-    subcategory: "Monthly",
-    date: "2023-10-01",
-  },
-  {
-    id: 2,
-    image: "/vite.svg",
-    type: "expense",
-    amount: 50,
-    category: "Groceries",
-    subcategory: "Monthly",
-    date: "2023-10-01",
-  },
-];
-function Tracker() {
+function Tracker(props) {
+  useEffect(() => {
+    props.fetchTransactions();
+    props.fetchTrackers();
+  }, []);
+
   return (
     <div>
       <div className={styles.balance}>
-        <h4>Total balance</h4>
-        <span>0.00€</span>
+        <h4>Total</h4>
+        <span>
+          {
+            props.trackers.find((element) => element.name == "total_balance")
+              ?.value
+          }
+          €
+        </span>
+        <div className={styles.flex}>
+          <div>
+            <p>Crédito(s)</p>
+            <span>
+              {
+                props.trackers.find((element) => element.name == "income")
+                  ?.value
+              }
+              €
+            </span>
+          </div>
+          <div>
+            <p>Despesa(s)</p>
+            <span>
+              {
+                props.trackers.find((element) => element.name == "expense")
+                  ?.value
+              }
+              €
+            </span>
+          </div>
+        </div>
       </div>
 
       <section className={styles.options}>
         <Link to="/tracker/income">
-          <button className={styles.income}>Add Income</button>
+          <button className={styles.income}>Creditar</button>
         </Link>
         <Link to="/tracker/expense">
-          <button className={styles.expense}>Add Expense</button>
+          <button className={styles.expense}>Debitar</button>
         </Link>
       </section>
+
+      <TrackerGraph />
 
       <section className={styles.transactions}>
         <div className={styles.flex}>
@@ -100,19 +64,16 @@ function Tracker() {
           <Link to="transactions">Ver tudo</Link>
         </div>
         <div>
-          {transactions.map((transaction) => (
+          {props.data.map((transaction) => (
             <div key={transaction.id} className={styles.transaction}>
-              <img src={transaction.image} alt="" />
+              <img src={transaction.category.image} alt="" />
               <div className={styles.descriptions}>
-                <h4>{transaction.category}</h4>
-                <p>{transaction.subcategory}</p>
+                <h4>{transaction.category.name}</h4>
+                <p>{transaction.subCategory.name}</p>
                 <p>{transaction.date}</p>
               </div>
 
-              <p className={styles.income}>
-                {transaction.type === "income" ? "+" : "-"}
-                {transaction.amount}€
-              </p>
+              <p className={styles.income}>{transaction.amount}€</p>
             </div>
           ))}
         </div>
@@ -121,4 +82,20 @@ function Tracker() {
   );
 }
 
-export default Tracker;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchTransactions: (page, filters) =>
+      dispatch(fetchTransactions(page, filters)),
+    fetchTrackers: (filters) => dispatch(fetchTrackers(filters)),
+  };
+};
+
+const mapStateToProps = (state) => {
+  return {
+    data: state.transaction.data,
+    loading: state.transaction.loading,
+    trackers: state.tracker.data,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Tracker);

@@ -10,39 +10,39 @@ export const initialState = {
 
 export default (state = initialState, action = {}) => {
   switch (action.type) {
-    case `${types.DELETE_SPONSOR}_PENDING`:
-    case `${types.CREATE_SPONSOR}_PENDING`:
-    case `${types.UPDATE_SPONSOR}_PENDING`:
-    case `${types.FETCH_SPONSORS}_PENDING`:
-    case `${types.FETCH_SPONSOR}_PENDING`:
+    case `${types.DELETE_TRANSACTION}_PENDING`:
+    case `${types.CREATE_TRANSACTION}_PENDING`:
+    case `${types.UPDATE_TRANSACTION}_PENDING`:
+    case `${types.FETCH_TRANSACTIONS}_PENDING`:
+    case `${types.FETCH_TRANSACTION}_PENDING`:
       return {
         ...state,
         loading: true,
       };
 
-    case `${types.UPDATE_SPONSOR}_REJECTED`:
-    case `${types.DELETE_SPONSOR}_REJECTED`:
-    case `${types.CREATE_SPONSOR}_REJECTED`:
+    case `${types.UPDATE_TRANSACTION}_REJECTED`:
+    case `${types.DELETE_TRANSACTION}_REJECTED`:
+    case `${types.CREATE_TRANSACTION}_REJECTED`:
       return {
         ...state,
         loading: false,
       };
 
-    case `${types.CREATE_SPONSOR}_FULFILLED`:
+    case `${types.CREATE_TRANSACTION}_FULFILLED`:
       return {
         ...state,
         loading: false,
         data: [action.payload.data.data, ...state.data],
       };
 
-    case `${types.DELETE_SPONSOR}_FULFILLED`:
+    case `${types.DELETE_TRANSACTION}_FULFILLED`:
       return {
         ...state,
         loading: false,
         data: state.data.filter((record) => record.id !== action.meta.id),
       };
 
-    case `${types.UPDATE_SPONSOR}_FULFILLED`:
+    case `${types.UPDATE_TRANSACTION}_FULFILLED`:
       return {
         ...state,
         loading: false,
@@ -53,30 +53,30 @@ export default (state = initialState, action = {}) => {
         ),
       };
 
-    case `${types.FETCH_SPONSOR}_REJECTED`:
+    case `${types.FETCH_TRANSACTION}_REJECTED`:
       return {
         ...state,
         loading: false,
         current: {},
       };
-    case `${types.FETCH_SPONSORS}_REJECTED`:
+    case `${types.FETCH_TRANSACTIONS}_REJECTED`:
       return {
         ...state,
         loading: false,
         data: [],
       };
-    case `${types.FETCH_SPONSOR}_FULFILLED`:
+    case `${types.FETCH_TRANSACTION}_FULFILLED`:
       return {
         ...state,
         loading: false,
         current: action.payload.data.data,
       };
 
-    case `${types.FETCH_SPONSORS}_FULFILLED`:
+    case `${types.FETCH_TRANSACTIONS}_FULFILLED`:
       return {
         ...state,
         loading: false,
-        data: action.payload.data,
+        data: action.payload.data.data,
       };
 
     default:

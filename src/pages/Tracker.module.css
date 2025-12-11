@@ -1,12 +1,32 @@
 .balance {
-    background-color: black;
+    background-color: rgb(50, 50, 50);
     color: white;
-    padding: 10px;
+    padding: 20px;
     box-sizing: border-box;
     border-radius: 10px;
 
-    h4 {
+    h4, p {
         margin: 0;
+        font-weight: 300;
+    }
+
+    
+    span {
+        font-size: 26px;
+        font-weight: bold;
+    }
+
+    .flex {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+
+  
+
+        span {
+            font-size: 16px;
+            font-weight: 300;
+        }
     }
 }
 
@@ -26,15 +46,25 @@
             border-radius: 10px;
             padding: 10px;
             box-sizing: border-box;
-            background-color: #e0f7fa;
-            color: #006064;
+            color: white;  
+            font-weight: bold;
             cursor: pointer;
+            border: 0px;
+        }
+
+        .expense {
+            background-color:rgb(215, 107, 11);
+        }
+
+        .income {
+            background-color:rgb(53, 162, 235);
+            
         }
     }
 
-    
-
 }
+
+
 
 .flex {
     display: flex;

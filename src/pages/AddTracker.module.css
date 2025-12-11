@@ -3,9 +3,9 @@
     padding: 20px;
     box-sizing: border-box;
     border-radius: 10px;
-    background-color: #e0e0e0;
-    border: 1px solid #bdbdbd;
+    background-color: rgba(0,0,0,0.05);
     font-size: 30px;
+    margin-top: 30px ;
 
     span {
         font-weight: bold;
@@ -27,48 +27,39 @@
         padding: 20px;
         box-sizing: border-box;
         text-align: center;
-        background-color: #e0e0e0;
+        background-color: rgba(0,0,0,0.05);
         width: calc(33% - 10px);
         -webkit-user-select: none; /* Safari */
         -ms-user-select: none; /* IE 10 and IE 11 */
         user-select: none; /* Standard syntax */
-
-        &:hover {
-            background-color: #d5d5d5;
-        }
     }
 }
 
 .buttonContainer {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     margin-top: 20px;
     gap: 20px;
 
     button {
-        width: 50%;
-        padding: 10px 20px;
+        padding: 20px 60px;
         font-size: 16px;
         border: none;
-        border-radius: 10px;
+        border-radius: 20px;
         cursor: pointer;
 
         &:first-child {
-            background-color: #f44336;
+            background-color: rgb(215, 107, 11);
             color: white;
 
-            &:hover {
-                background-color: #d32f2f;
-            }
+         
         }
 
         &:last-child {
-            background-color: #4caf50;
+            background-color: rgba(53, 162, 235);
             color: white;
 
-            &:hover {
-                background-color: #388e3c;
-            }
+      
         }
     }
 }

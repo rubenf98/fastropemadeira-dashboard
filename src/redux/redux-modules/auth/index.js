@@ -55,7 +55,7 @@ export default (state = initialState, action = {}) => {
         ...state,
         loading: false,
         isAuthenticated: true,
-        user: action.payload.data.data,
+        user: action.payload.data,
       };
     case `${types.LOGIN}_FULFILLED`:
       return {

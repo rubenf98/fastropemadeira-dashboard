@@ -1,65 +1,89 @@
-import React, { useState } from "react";
-import { Link, useParams } from "react-router";
+import React, { useEffect, useState } from "react";
+import { Link, Navigate, redirect, useNavigate, useParams } from "react-router";
 import styles from "./AddTracker.module.css";
 import { Cascader, DatePicker } from "antd";
 import TextArea from "antd/es/input/TextArea";
+import { fetchTransactionCategories } from "../redux/redux-modules/transactionCategory/actions";
+import { createTransaction } from "../redux/redux-modules/transaction/actions";
+
+import { connect } from "react-redux";
 
 const values = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "⌫"];
-const categories = [
-  {
-    id: 1,
-    name: "Food",
-    children: [
-      { id: 1, name: "Groceries" },
-      { id: 2, name: "Restaurants" },
-    ],
-  },
-  {
-    id: 2,
-    name: "Transport",
-    children: [
-      { id: 3, name: "Public Transport" },
-      { id: 4, name: "Taxi" },
-    ],
-  },
-  {
-    id: 3,
-    name: "Entertainment",
-    children: [
-      { id: 5, name: "Movies" },
-      { id: 6, name: "Games" },
-    ],
-  },
-  {
-    id: 4,
-    name: "Salary",
-    children: [],
-  },
-];
 
-function AddTracker() {
+function AddTracker(props) {
+  const navigate = useNavigate();
   const { type } = useParams();
   const [form, setForm] = useState({
     description: undefined,
     category: undefined,
     date: undefined,
     type: type,
-    total: undefined,
+    amount: undefined,
   });
+
+  useEffect(() => {
+    props.fetchTransactionCategories();
+  }, []);
 
   const handleKeypadClick = (value) => {
     if (value === "⌫") {
-      setForm({ ...form, total: form.total.slice(0, -1) });
+      setForm({ ...form, amount: form.amount.slice(0, -1) });
     } else {
-      setForm({ ...form, total: (form.total || "") + value });
+      setForm({ ...form, amount: (form.amount || "") + value });
+    }
+  };
+
+  const handleSubmit = () => {
+    if (form.category && form.date && form.amount) {
+      props
+        .createTransaction({
+          ...form,
+          date: new Date(form.date).toISOString().split("T")[0],
+          amount: type == "income" ? form.amount : -form.amount,
+        })
+        .then((response) => {
+          navigate("/tracker");
+        });
     }
   };
 
   return (
     <div>
+      <section className={styles.form}>
+        <div className={styles.formItem}>
+          <Cascader
+            size="large"
+            variant="filled"
+            style={{ width: "100%" }}
+            value={form.category}
+            fieldNames={{
+              label: "name",
+              value: "id",
+              children: "subcategories",
+            }}
+            options={props.data}
+            onChange={(value, selectedOptions) => {
+              setForm({ ...form, category: value });
+            }}
+            placeholder="Categoria"
+          />
+        </div>
+        <div className={styles.formItem}>
+          <DatePicker
+            format="DD-MM-YYYY"
+            size="large"
+            variant="filled"
+            style={{ width: "100%" }}
+            value={form.date}
+            onChange={(date) => setForm({ ...form, date })}
+            placeholder="Data"
+          />
+        </div>
+      </section>
+
       <div className={styles.totalContainer}>
         {type == "income" ? "+" : "-"}
-        <span>{form.total ? form.total : "0"}€</span>
+        <span>{form.amount ? form.amount : "0"}€</span>
       </div>
 
       <div className={styles.keypadContainer}>
@@ -68,40 +92,19 @@ function AddTracker() {
         ))}
       </div>
 
-      <section className={styles.form}>
-        <div className={styles.formItem}>
-          <p>Categoria</p>
-          <Cascader
-            style={{ width: "100%" }}
-            value={form.category}
-            fieldNames={{ label: "name", value: "id", children: "children" }}
-            options={categories}
-            onChange={(value, selectedOptions) => {
-              setForm({ ...form, category: value });
-            }}
-            placeholder="Please select"
-          />
-        </div>
-        <div className={styles.formItem}>
-          <p>Data</p>
-          <DatePicker
-            style={{ width: "100%" }}
-            value={form.date}
-            onChange={(date) => setForm({ ...form, date })}
-            placeholder="Please select"
-          />
-        </div>
-        <p>Comentários</p>
+      {/* <section className={styles.form}>
         <TextArea
+          size="large"
+          variant="filled"
           style={{ width: "100%" }}
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
-          placeholder="Please enter comments"
+          placeholder="Introduza os seus comentários"
           rows={4}
         />
-      </section>
+      </section> */}
       <div className={styles.buttonContainer}>
-        <button
+        {/* <button
           type="reset"
           onClick={() =>
             setForm({
@@ -113,12 +116,29 @@ function AddTracker() {
             })
           }
         >
-          Reset
+          Cancelar
+        </button> */}
+        <button onClick={handleSubmit} type="submit">
+          Submeter
         </button>
-        <button type="submit">Submeter</button>
       </div>
     </div>
   );
 }
 
-export default AddTracker;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchTransactionCategories: (filters) =>
+      dispatch(fetchTransactionCategories(filters)),
+    createTransaction: (data) => dispatch(createTransaction(data)),
+  };
+};
+
+const mapStateToProps = (state) => {
+  return {
+    data: state.transactionCategory.data,
+    loading: state.transactionCategory.loading,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddTracker);

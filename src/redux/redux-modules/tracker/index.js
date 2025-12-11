@@ -10,32 +10,32 @@ export const initialState = {
 
 export default (state = initialState, action = {}) => {
     switch (action.type) {
-        case `${types.DELETE_QUESTION}_PENDING`:
-        case `${types.CREATE_QUESTION}_PENDING`:
-        case `${types.UPDATE_QUESTION}_PENDING`:
-        case `${types.FETCH_QUESTIONS}_PENDING`:
-        case `${types.FETCH_QUESTION}_PENDING`:
+        case `${types.DELETE_TRACKER}_PENDING`:
+        case `${types.CREATE_TRACKER}_PENDING`:
+        case `${types.UPDATE_TRACKER}_PENDING`:
+        case `${types.FETCH_TRACKERS}_PENDING`:
+        case `${types.FETCH_TRACKER}_PENDING`:
             return {
                 ...state,
                 loading: true,
             };
 
-        case `${types.UPDATE_QUESTION}_REJECTED`:
-        case `${types.DELETE_QUESTION}_REJECTED`:
-        case `${types.CREATE_QUESTION}_REJECTED`:
+        case `${types.UPDATE_TRACKER}_REJECTED`:
+        case `${types.DELETE_TRACKER}_REJECTED`:
+        case `${types.CREATE_TRACKER}_REJECTED`:
             return {
                 ...state,
                 loading: false,
             };
 
-        case `${types.CREATE_QUESTION}_FULFILLED`:
+        case `${types.CREATE_TRACKER}_FULFILLED`:
             return {
                 ...state,
                 loading: false,
                 data: [action.payload.data.data, ...state.data]
             };
 
-        case `${types.DELETE_QUESTION}_FULFILLED`:
+        case `${types.DELETE_TRACKER}_FULFILLED`:
             return {
                 ...state,
                 loading: false,
@@ -44,7 +44,7 @@ export default (state = initialState, action = {}) => {
                 )
             };
 
-        case `${types.UPDATE_QUESTION}_FULFILLED`:
+        case `${types.UPDATE_TRACKER}_FULFILLED`:
             return {
                 ...state,
                 loading: false,
@@ -56,26 +56,26 @@ export default (state = initialState, action = {}) => {
                 )
             };
 
-        case `${types.FETCH_QUESTION}_REJECTED`:
+        case `${types.FETCH_TRACKER}_REJECTED`:
             return {
                 ...state,
                 loading: false,
                 current: {},
             };
-        case `${types.FETCH_QUESTIONS}_REJECTED`:
+        case `${types.FETCH_TRACKERS}_REJECTED`:
             return {
                 ...state,
                 loading: false,
                 data: []
             };
-        case `${types.FETCH_QUESTION}_FULFILLED`:
+        case `${types.FETCH_TRACKER}_FULFILLED`:
             return {
                 ...state,
                 loading: false,
                 current: action.payload.data.data,
             };
 
-        case `${types.FETCH_QUESTIONS}_FULFILLED`:
+        case `${types.FETCH_TRACKERS}_FULFILLED`:
             return {
                 ...state,
                 loading: false,

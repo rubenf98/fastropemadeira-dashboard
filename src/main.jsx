@@ -11,7 +11,7 @@ import { router } from "./router.jsx";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { jwtDecode } from "jwt-decode";
-import { persistor, store } from "./redux/store.js";
+import { store } from "./redux/store.js";
 
 if (localStorage.token) {
   const token = jwtDecode(localStorage.token);
@@ -29,8 +29,6 @@ if (localStorage.token) {
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <PersistGate persistor={persistor}>
-      <RouterProvider router={router} />
-    </PersistGate>
+    <RouterProvider router={router} />
   </Provider>
 );

@@ -4,16 +4,11 @@ import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import { configureStore } from '@reduxjs/toolkit'
 
-const persistConfig = {
-    key: "root",
-    storage,
-    whitelist: ["auth"],
-};
 
-const persistedReducer = persistReducer(persistConfig, reducer);
+
 
 export const store = configureStore({
-    reducer: persistedReducer,
+    reducer: reducer,
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: false,
@@ -21,4 +16,4 @@ export const store = configureStore({
     devTools: true,
 });
 
-export const persistor = persistStore(store);
+// export const persistor = persistStore(store);

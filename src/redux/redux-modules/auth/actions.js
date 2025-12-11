@@ -29,7 +29,7 @@ export const login = (data) => ({
 
 export const me = () => ({
     type: types.ME,
-    payload: axios.get(`${import.meta.env.VITE_API_URL}/api/me`),
+    payload: axios.post(`${import.meta.env.VITE_API_URL}/api/me`),
 });
 
 export function loginSuccess(token, user) {
