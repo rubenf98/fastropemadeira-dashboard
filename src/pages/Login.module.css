@@ -54,13 +54,18 @@
         }
     }
 
+    h2 {
+        color: white;
+    }
+
     button {
         margin-top: 30px;
         display: block;
         padding: 10px 26px;
         border: none;
-        background: #2d6df8;
-        color: white;
+        color: #2d6df8;
+        font-weight: bold;
+        background: white;
         cursor: pointer;
         font-size: 16px;
         border-radius: 8px;
@@ -89,16 +94,6 @@
     }
 
 
-    .screenBackgroundShape1 {
-        transform: rotate(45deg);
-        position: absolute;
-        height: 700px;
-        width: 700px;
-        background: #FFF;	
-        top: -110px;
-        right: 380px;	
-        border-radius: 0 72px 0 0;
-    }
 
     .screenBackgroundShape2 {
         transform: rotate(45deg);

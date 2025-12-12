@@ -12,16 +12,21 @@ function Login(props) {
   const [form, setForm] = useState({ email: undefined, password: undefined });
 
   const handleSubmit = () => {
-    props.login(form).then((response) => {
-      const token = response.value.data.access_token;
-      localStorage.setItem("token", token);
-      props.setAuthorizationToken(token);
-    });
+    props
+      .login(form)
+      .then((response) => {
+        const token = response.value.data.access_token;
+        localStorage.setItem("token", token);
+        props.setAuthorizationToken(token);
+      })
+      .catch((error) => {
+        alert("Login falhou, tente novamente.");
+      });
   };
 
   useEffect(() => {
     if (props.isAuthenticated) {
-      navigate("/dashboard");
+      navigate("/tracker");
     }
   }, [props.isAuthenticated]);
 
@@ -30,6 +35,7 @@ function Login(props) {
       <div className={styles.card}>
         <div className={styles.formContainer}>
           <div>
+            <h2>Iniciar Sessão</h2>
             <input
               name="email"
               placeholder="Email"

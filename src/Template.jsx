@@ -10,7 +10,7 @@ function Template(props) {
 
   useEffect(() => {
     if (!props.isAuthenticated) {
-      // navigate("/");
+      navigate("/");
     }
   }, [props.isAuthenticated]);
 

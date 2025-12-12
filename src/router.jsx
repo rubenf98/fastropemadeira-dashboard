@@ -13,7 +13,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/dashboard",
-        element: <App />,
+        element: <Tracker />,
       },
       {
         path: "/tracker",
