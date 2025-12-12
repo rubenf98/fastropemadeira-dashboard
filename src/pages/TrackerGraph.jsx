@@ -40,40 +40,58 @@ export const options = {
   },
 };
 
-const labels = ["January", "February", "March", "April", "May", "June"];
+function TrackerGraph(props) {
+  const apiData = props.data || [];
 
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: "Créditos",
-      data: labels.map(() => Math.floor(Math.random() * 1001)),
-      backgroundColor: "rgba(53, 162, 235)",
-      borderRadius: 6,
-    },
-    {
-      label: "Débitos",
-      data: labels.map(() => Math.floor(Math.random() * 1001)),
-      backgroundColor: "rgb(215, 107, 11)",
-      borderRadius: 6,
-    },
-  ],
-};
+  // Convert months like 2025-01 → "Jan", "Feb", etc. (optional)
+  const formatMonth = (yyyymm) => {
+    const [year, month] = yyyymm.split("-");
+    return new Date(year, month - 1).toLocaleString("pt-PT", {
+      month: "short",
+    });
+  };
 
-function TrackerGraph() {
+  // Extract labels and datasets from API
+  const labels = apiData.map((item) => formatMonth(item.month));
+
+  const incomeData = apiData.map((item) =>
+    Math.abs(parseFloat(item.total_income))
+  );
+  const expenseData = apiData.map((item) =>
+    Math.abs(parseFloat(item.total_expense))
+  );
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "Créditos",
+        data: incomeData,
+        backgroundColor: "rgba(53, 162, 235)",
+        borderRadius: 6,
+      },
+      {
+        label: "Débitos",
+        data: expenseData,
+        backgroundColor: "rgb(215, 107, 11)",
+        borderRadius: 6,
+      },
+    ],
+  };
+
   return (
     <div
       style={{
-        width: "100%", // full width of parent
-        maxWidth: "100%", // prevent max-width from shrinking it
-        height: 200, // desired height in px (change as needed)
-        position: "relative", // allows absolute fill of canvas
+        width: "100%",
+        maxWidth: "100%",
+        height: 200,
+        position: "relative",
       }}
     >
       <div
         style={{
           position: "absolute",
-          inset: 0, // top:0; right:0; bottom:0; left:0;
+          inset: 0,
         }}
       >
         <Bar options={options} data={data} />

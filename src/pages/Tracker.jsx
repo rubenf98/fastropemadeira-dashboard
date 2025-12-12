@@ -3,13 +3,17 @@ import styles from "./Tracker.module.css";
 import { Link } from "react-router";
 import TrackerGraph from "./TrackerGraph";
 import { connect } from "react-redux";
-import { fetchTransactions } from "../redux/redux-modules/transaction/actions";
+import {
+  fetchTransactions,
+  fetchTransactionsStatistics,
+} from "../redux/redux-modules/transaction/actions";
 import { fetchTrackers } from "../redux/redux-modules/tracker/actions";
 
 function Tracker(props) {
   useEffect(() => {
     props.fetchTransactions();
     props.fetchTrackers();
+    props.fetchTransactionsStatistics();
   }, []);
 
   return (
@@ -56,17 +60,24 @@ function Tracker(props) {
         </Link>
       </section>
 
-      <TrackerGraph />
+      <TrackerGraph data={props.statistics} />
 
       <section className={styles.transactions}>
         <div className={styles.flex}>
           <h3>Transações recentes</h3>
-          <Link to="transactions">Ver tudo</Link>
+          <Link to="/transactions">Ver tudo</Link>
         </div>
         <div>
           {props.data.map((transaction) => (
-            <div key={transaction.id} className={styles.transaction}>
-              <img src={transaction.category.image} alt="" />
+            <Link
+              to={"/transaction/" + transaction.id}
+              key={transaction.id}
+              className={styles.transaction}
+            >
+              <img
+                src={import.meta.env.VITE_API_URL + transaction.category.image}
+                alt=""
+              />
               <div className={styles.descriptions}>
                 <h4>{transaction.category.name}</h4>
                 <p>{transaction.subCategory.name}</p>
@@ -74,7 +85,7 @@ function Tracker(props) {
               </div>
 
               <p className={styles.income}>{transaction.amount}€</p>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -87,12 +98,16 @@ const mapDispatchToProps = (dispatch) => {
     fetchTransactions: (page, filters) =>
       dispatch(fetchTransactions(page, filters)),
     fetchTrackers: (filters) => dispatch(fetchTrackers(filters)),
+    fetchTransactionsStatistics: (filters) =>
+      dispatch(fetchTransactionsStatistics(filters)),
   };
 };
 
 const mapStateToProps = (state) => {
   return {
     data: state.transaction.data,
+    statistics: state.transaction.statistics,
+
     loading: state.transaction.loading,
     trackers: state.tracker.data,
   };
