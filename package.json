@@ -1,6 +1,6 @@
 {
   "name": "fastropemadeira-dashboard",
-  "homepage": "https://admin.fastropemadeira.com/",
+  "homepage": "https://painel.fastropemadeira.com/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
