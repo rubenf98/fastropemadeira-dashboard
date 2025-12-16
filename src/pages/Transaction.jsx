@@ -4,6 +4,7 @@ import styles from "./AddTracker.module.css";
 import { Cascader, DatePicker } from "antd";
 import { fetchTransactionCategories } from "../redux/redux-modules/transactionCategory/actions";
 import {
+  deleteTransaction,
   fetchTransaction,
   updateTransaction,
 } from "../redux/redux-modules/transaction/actions";
@@ -63,6 +64,12 @@ function Transaction(props) {
     }
   };
 
+  const handleDelete = () => {
+    props.deleteTransaction(id).then((response) => {
+      navigate("/tracker");
+    });
+  };
+
   return (
     <div>
       <section className={styles.form}>
@@ -120,20 +127,9 @@ function Transaction(props) {
         />
       </section> */}
       <div className={styles.buttonContainer}>
-        {/* <button
-          type="reset"
-          onClick={() =>
-            setForm({
-              description: undefined,
-              category: undefined,
-              date: undefined,
-              type: type,
-              total: undefined,
-            })
-          }
-        >
-          Cancelar
-        </button> */}
+        <button type="reset" onClick={handleDelete}>
+          Apagar
+        </button>
         <button onClick={handleSubmit} type="submit">
           Atualizar
         </button>
@@ -148,6 +144,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchTransactionCategories: (filters) =>
       dispatch(fetchTransactionCategories(filters)),
     updateTransaction: (id, data) => dispatch(updateTransaction(id, data)),
+    deleteTransaction: (id) => dispatch(deleteTransaction(id)),
   };
 };
 
