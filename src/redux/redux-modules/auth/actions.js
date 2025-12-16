@@ -12,7 +12,7 @@ import { jwtDecode } from "jwt-decode";
 
 // export const login = (data) => {
 //     return (dispatch) => {
-//         return axios.post(`${import.meta.env.VITE_API_URL}/api/login`, data).then((res) => {
+//         return axios.post(`${import.meta.env.VITE_PROD_API_URL}/api/login`, data).then((res) => {
 //             console.log(res.data.token);
 //             const token = res.data.token.token;
 //             localStorage.setItem("token", token);
@@ -24,12 +24,12 @@ import { jwtDecode } from "jwt-decode";
 
 export const login = (data) => ({
     type: types.LOGIN,
-    payload: axios.post(`${import.meta.env.VITE_API_URL}/api/login`, data),
+    payload: axios.post(`${import.meta.env.VITE_PROD_API_URL}/api/login`, data),
 });
 
 export const me = () => ({
     type: types.ME,
-    payload: axios.post(`${import.meta.env.VITE_API_URL}/api/me`),
+    payload: axios.post(`${import.meta.env.VITE_PROD_API_URL}/api/me`),
 });
 
 export function loginSuccess(token, user) {
@@ -44,7 +44,7 @@ export const logout = () => {
     return (dispatch) => {
         const response = dispatch({
             type: types.LOGOUT,
-            payload: axios.post(`${import.meta.env.VITE_API_URL}/api/logout`),
+            payload: axios.post(`${import.meta.env.VITE_PROD_API_URL}/api/logout`),
         });
         response.then((res) => {
             resetToken();
@@ -56,7 +56,7 @@ export function refreshAuthorizationToken(token) {
     return (dispatch) => {
         return axios
             .get({
-                url: `${import.meta.env.VITE_API_URL}/api/refresh`,
+                url: `${import.meta.env.VITE_PROD_API_URL}/api/refresh`,
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((res) => {
@@ -83,13 +83,13 @@ export function resetToken() {
 
 export const updateUser = (data) => ({
     type: types.UPDATE_USER,
-    payload: axios.post(`${import.meta.env.VITE_API_URL}/api/users`, data),
+    payload: axios.post(`${import.meta.env.VITE_PROD_API_URL}/api/users`, data),
 });
 
 
 export const deleteUser = (data) => ({
     type: types.DELETE_USER,
-    payload: axios.delete(`${import.meta.env.VITE_API_URL}/api/deleteUser`, data),
+    payload: axios.delete(`${import.meta.env.VITE_PROD_API_URL}/api/deleteUser`, data),
 });
 // export const updateProfilePicture = (id, data) => ({
 //     type: types.UPDATE_PROFILE_PICTURE,

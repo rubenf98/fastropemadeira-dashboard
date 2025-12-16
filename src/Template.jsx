@@ -20,7 +20,10 @@ function Template(props) {
         <div className={styles.header}>
           <h2>Painel de Controlo</h2>
           <Link to="/dashboard">
-            <img src={import.meta.env.VITE_API_URL + "/logo.svg"} alt="logo" />
+            <img
+              src={import.meta.env.VITE_PROD_API_URL + "/logo.svg"}
+              alt="logo"
+            />
           </Link>
         </div>
         <Outlet />

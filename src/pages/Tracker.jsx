@@ -75,7 +75,9 @@ function Tracker(props) {
               className={styles.transaction}
             >
               <img
-                src={import.meta.env.VITE_API_URL + transaction.category.image}
+                src={
+                  import.meta.env.VITE_PROD_API_URL + transaction.category.image
+                }
                 alt=""
               />
               <div className={styles.descriptions}>
