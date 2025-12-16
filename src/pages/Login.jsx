@@ -12,16 +12,11 @@ function Login(props) {
   const [form, setForm] = useState({ email: undefined, password: undefined });
 
   const handleSubmit = () => {
-    props
-      .login(form)
-      .then((response) => {
-        const token = response.value.data.access_token;
-        localStorage.setItem("token", token);
-        props.setAuthorizationToken(token);
-      })
-      .catch((error) => {
-        alert("Login falhou, tente novamente.");
-      });
+    props.login(form).then((response) => {
+      const token = response.value.data.access_token;
+      localStorage.setItem("token", token);
+      props.setAuthorizationToken(token);
+    });
   };
 
   useEffect(() => {
