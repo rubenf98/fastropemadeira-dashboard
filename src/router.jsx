@@ -1,5 +1,4 @@
-import { createBrowserRouter } from "react-router";
-import App from "./App";
+import { createHashRouter } from "react-router";
 import Template from "./Template";
 import Login from "./pages/Login";
 import Tracker from "./pages/Tracker";
@@ -7,7 +6,7 @@ import AddTracker from "./pages/AddTracker";
 import Transaction from "./pages/Transaction";
 import Transactions from "./pages/Transactions";
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     element: <Template />,
     children: [
