@@ -2,9 +2,11 @@ import { createHashRouter } from "react-router";
 import Template from "./Template";
 import Login from "./pages/Login";
 import Tracker from "./pages/Tracker";
-import AddTracker from "./pages/AddTracker";
 import Transaction from "./pages/Transaction";
 import Transactions from "./pages/Transactions";
+import TotalBalanceForm from "./pages/TotalBalanceForm";
+import PartnerBalanceForm from "./pages/PartnerBalanceForm";
+import Partner from "./pages/Partner";
 
 export const router = createHashRouter([
   {
@@ -19,8 +21,12 @@ export const router = createHashRouter([
         element: <Tracker />,
       },
       {
-        path: "/tracker/:type",
-        element: <AddTracker />,
+        path: "/tracker/total-balance",
+        element: <TotalBalanceForm />,
+      },
+      {
+        path: "/tracker/partner-balance",
+        element: <PartnerBalanceForm />,
       },
       {
         path: "/transactions",
@@ -29,6 +35,10 @@ export const router = createHashRouter([
       {
         path: "/transaction/:id",
         element: <Transaction />,
+      },
+      {
+        path: "/partner/:id",
+        element: <Partner />,
       },
     ],
   },

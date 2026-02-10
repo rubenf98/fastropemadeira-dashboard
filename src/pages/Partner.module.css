@@ -1,0 +1,45 @@
+.card {
+    background-color: white;
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+
+    h4, span, button {
+        margin: 0;
+        font-weight: bold;
+        font-size: 22px;
+    }
+
+    button {
+        margin-top: 20px;
+        width: 100%;
+        padding: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        box-sizing: border-box;
+        color: white;
+        border: none;
+        border-radius: 10px;
+    }
+}
+
+.pending_payment {
+    background-color: rgb(215, 107, 11);
+    
+}
+
+.pending_income {
+    background-color: rgba(53, 162, 235);
+}
+
+.card_content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+
+
+    
+}

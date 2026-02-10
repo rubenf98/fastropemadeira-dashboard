@@ -69,6 +69,7 @@
     flex-wrap: wrap;
     margin-top: 20px;
     justify-content: space-between;
+    gap: 20px;
 }
 
 .formItem {

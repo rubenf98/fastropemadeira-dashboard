@@ -1,45 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { Link, Navigate, redirect, useNavigate, useParams } from "react-router";
-import styles from "./AddTracker.module.css";
-import { Cascader, DatePicker } from "antd";
+import { Link, useNavigate, useParams } from "react-router";
+import styles from "./TotalBalanceForm.module.css";
+import { Cascader, DatePicker, InputNumber, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { fetchTransactionCategories } from "../redux/redux-modules/transactionCategory/actions";
 import { createTransaction } from "../redux/redux-modules/transaction/actions";
 
 import { connect } from "react-redux";
+import ValueInput from "./common/ValueInput";
 
-const values = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "⌫"];
-
-function AddTracker(props) {
+function TotalBalanceForm(props) {
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const navigate = useNavigate();
-  const { type } = useParams();
   const [form, setForm] = useState({
     description: undefined,
     category: undefined,
     date: undefined,
-    type: type,
+    type: undefined,
     amount: undefined,
+    n_clients: undefined,
   });
 
   useEffect(() => {
-    props.fetchTransactionCategories();
+    props.fetchTransactionCategories({ normal: true });
   }, []);
 
-  const handleKeypadClick = (value) => {
-    if (value === "⌫") {
-      setForm({ ...form, amount: form.amount.slice(0, -1) });
-    } else {
-      setForm({ ...form, amount: (form.amount || "") + value });
-    }
-  };
-
   const handleSubmit = () => {
+    setHasSubmitted(true);
     if (form.category && form.date && form.amount) {
       props
         .createTransaction({
           ...form,
+          type: "total_balance",
           date: new Date(form.date).toISOString().split("T")[0],
-          amount: type == "income" ? form.amount : -form.amount,
+          amount: form.type == "-" ? -form.amount : form.amount,
         })
         .then((response) => {
           navigate("/tracker");
@@ -52,6 +46,7 @@ function AddTracker(props) {
       <section className={styles.form}>
         <div className={styles.formItem}>
           <Cascader
+            status={hasSubmitted && !form.category ? "error" : ""}
             size="large"
             variant="filled"
             style={{ width: "100%" }}
@@ -70,6 +65,7 @@ function AddTracker(props) {
         </div>
         <div className={styles.formItem}>
           <DatePicker
+            status={hasSubmitted && !form.date ? "error" : ""}
             format="DD-MM-YYYY"
             size="large"
             variant="filled"
@@ -79,20 +75,34 @@ function AddTracker(props) {
             placeholder="Data"
           />
         </div>
+        <div className={styles.formItem}>
+          <InputNumber
+            size="large"
+            variant="filled"
+            style={{ width: "100%" }}
+            value={form.n_clients}
+            onChange={(value) => setForm({ ...form, n_clients: value })}
+            placeholder="Nº de pessoas"
+          />
+        </div>
+        <div className={styles.formItem}>
+          <Select
+            status={hasSubmitted && !form.type ? "error" : ""}
+            size="large"
+            variant="filled"
+            style={{ width: "100%" }}
+            value={form.type}
+            onChange={(value) => setForm({ ...form, type: value })}
+            placeholder="Tipo de transação"
+            options={[
+              { value: "+", label: "Creditar" },
+              { value: "-", label: "Debitar" },
+            ]}
+          />
+        </div>
       </section>
 
-      <div className={styles.totalContainer}>
-        {type == "income" ? "+" : "-"}
-        <span>{form.amount ? form.amount : "0"}€</span>
-      </div>
-
-      <div className={styles.keypadContainer}>
-        {values.map((value) => (
-          <div onClick={() => handleKeypadClick(value)}>{value}</div>
-        ))}
-      </div>
-
-      {/* <section className={styles.form}>
+      <section className={styles.form}>
         <TextArea
           size="large"
           variant="filled"
@@ -102,7 +112,10 @@ function AddTracker(props) {
           placeholder="Introduza os seus comentários"
           rows={4}
         />
-      </section> */}
+      </section>
+
+      <ValueInput form={form} setForm={setForm} />
+
       <div className={styles.buttonContainer}>
         {/* <button
           type="reset"
@@ -111,12 +124,12 @@ function AddTracker(props) {
               description: undefined,
               category: undefined,
               date: undefined,
-              type: type,
+              type: undefined,
               total: undefined,
             })
           }
         >
-          Cancelar
+          Reset
         </button> */}
         <button onClick={handleSubmit} type="submit">
           Submeter
@@ -141,4 +154,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddTracker);
+export default connect(mapStateToProps, mapDispatchToProps)(TotalBalanceForm);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import styles from "./AddTracker.module.css";
+import styles from "./TotalBalanceForm.module.css";
 import { Cascader, DatePicker } from "antd";
 import { fetchTransactionCategories } from "../redux/redux-modules/transactionCategory/actions";
 import {

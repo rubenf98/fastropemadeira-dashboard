@@ -23,7 +23,7 @@ function Transactions(props) {
     if (props.data.length) {
       setAllData((prev) => {
         const newItems = props.data.filter(
-          (d) => !prev.some((p) => p.id === d.id)
+          (d) => !prev.some((p) => p.id === d.id),
         );
         return [...prev, ...newItems];
       });
@@ -41,9 +41,7 @@ function Transactions(props) {
               className={styles.transaction}
             >
               <img
-                src={
-                  import.meta.env.VITE_PROD_API_URL + transaction.category.image
-                }
+                src={import.meta.env.VITE_API_URL + transaction.category.image}
                 alt=""
               />
               <div className={styles.descriptions}>
