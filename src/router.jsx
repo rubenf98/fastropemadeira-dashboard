@@ -7,6 +7,7 @@ import Transactions from "./pages/Transactions";
 import TotalBalanceForm from "./pages/TotalBalanceForm";
 import PartnerBalanceForm from "./pages/PartnerBalanceForm";
 import Partner from "./pages/Partner";
+import TotalGetYourGuideForm from "./pages/TotalGetYourGuideForm";
 
 export const router = createHashRouter([
   {
@@ -27,6 +28,10 @@ export const router = createHashRouter([
       {
         path: "/tracker/partner-balance",
         element: <PartnerBalanceForm />,
+      },
+      {
+        path: "/tracker/total-getyourguide",
+        element: <TotalGetYourGuideForm />,
       },
       {
         path: "/transactions",

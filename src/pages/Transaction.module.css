@@ -1,0 +1,61 @@
+.buttonContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+    gap: 30px;
+
+    button {
+        padding: 16px 60px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        background-color: rgb(235, 53, 53);
+        color: white;
+        width: 100%;
+    }
+}
+
+
+.show {
+    
+    margin-top: 20px;
+    gap: 20px;
+    border: 1px solid gray;
+    border-radius: 8px;
+}
+
+.showItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 10px;
+    gap: 5px;
+    box-sizing: border-box;
+    border-bottom: 1px solid gray;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    span {
+
+        &:first-child {
+            font-weight: bold;
+
+            &::after {
+                content: ":";
+                margin-left: 1px;
+            }
+        }
+
+        &:last-child {
+            text-align: right;
+        }
+    }
+
+    a {
+        color: rgb(9, 90, 144);
+        text-decoration: underline;
+    }
+}

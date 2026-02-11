@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import styles from "./TotalBalanceForm.module.css";
-import { Cascader, DatePicker, InputNumber, Select } from "antd";
+import { Cascader, DatePicker, Input, InputNumber, Select } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { fetchTransactionCategories } from "../redux/redux-modules/transactionCategory/actions";
 import { createTransaction } from "../redux/redux-modules/transaction/actions";
@@ -11,6 +11,7 @@ import ValueInput from "./common/ValueInput";
 
 function TotalBalanceForm(props) {
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [extraField, setExtraField] = useState(undefined);
   const navigate = useNavigate();
   const [form, setForm] = useState({
     description: undefined,
@@ -18,11 +19,10 @@ function TotalBalanceForm(props) {
     date: undefined,
     type: undefined,
     amount: undefined,
-    n_clients: undefined,
   });
 
   useEffect(() => {
-    props.fetchTransactionCategories({ normal: true });
+    props.fetchTransactionCategories();
   }, []);
 
   const handleSubmit = () => {
@@ -35,17 +35,60 @@ function TotalBalanceForm(props) {
           date: new Date(form.date).toISOString().split("T")[0],
           amount: form.type == "-" ? -form.amount : form.amount,
         })
-        .then((response) => {
+        .then(() => {
           navigate("/tracker");
         });
     }
   };
 
+  useEffect(() => {
+    if (form.category) {
+      if (form?.category[1]) {
+        var record = checkForExtraFields();
+
+        setExtraField(record?.extra_field ?? undefined);
+      }
+    }
+  }, [form.category]);
+
+  const checkForExtraFields = () => {
+    for (const category of props.data) {
+      if (!category.subcategories) continue;
+
+      const subcategory = category.subcategories.find(
+        (sub) => sub.id === form.category[1],
+      );
+
+      if (subcategory) {
+        return subcategory;
+      }
+    }
+
+    return undefined;
+  };
+
+  const cascaderFilter = (inputValue, path) => {
+    return path.some((option) => {
+      return option.name.toLowerCase().includes(inputValue.toLowerCase());
+    });
+  };
+
   return (
     <div>
+      <button
+        className={styles.backButton}
+        onClick={() => navigate("/tracker/")}
+      >
+        <img src="/back.svg" alt="Voltar" />
+        Voltar
+      </button>
       <section className={styles.form}>
         <div className={styles.formItem}>
           <Cascader
+            showSearch={{
+              filter: cascaderFilter,
+              onSearch: (value) => console.log(value),
+            }}
             status={hasSubmitted && !form.category ? "error" : ""}
             size="large"
             variant="filled"
@@ -75,16 +118,7 @@ function TotalBalanceForm(props) {
             placeholder="Data"
           />
         </div>
-        <div className={styles.formItem}>
-          <InputNumber
-            size="large"
-            variant="filled"
-            style={{ width: "100%" }}
-            value={form.n_clients}
-            onChange={(value) => setForm({ ...form, n_clients: value })}
-            placeholder="Nº de pessoas"
-          />
-        </div>
+
         <div className={styles.formItem}>
           <Select
             status={hasSubmitted && !form.type ? "error" : ""}
@@ -100,6 +134,32 @@ function TotalBalanceForm(props) {
             ]}
           />
         </div>
+
+        {extraField === "n_clients" && (
+          <div className={styles.formItem}>
+            <InputNumber
+              size="large"
+              variant="filled"
+              style={{ width: "100%" }}
+              value={form.n_clients}
+              onChange={(value) => setForm({ ...form, n_clients: value })}
+              placeholder="Nº de pessoas"
+            />
+          </div>
+        )}
+
+        {extraField === "guide_name" && (
+          <div className={styles.formItem}>
+            <Input
+              size="large"
+              variant="filled"
+              style={{ width: "100%" }}
+              value={form.guide_name}
+              onChange={(e) => setForm({ ...form, guide_name: e.target.value })}
+              placeholder="Nome do guia"
+            />
+          </div>
+        )}
       </section>
 
       <section className={styles.form}>

@@ -126,7 +126,6 @@
 .transaction {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     gap: 20px;
     border-bottom: 1px solid #ccc;
     padding: 20px 0px;
@@ -134,9 +133,10 @@
     color: black;
 
     img {
-        width: 60px;
-        height: 60px;
+        width: 90px;
+        height: 90px;
         object-fit: cover;
+        border-radius: 8px;
     }
 
     h4, p {
@@ -162,4 +162,36 @@
     border: 0px;
     text-decoration: underline;
     font-size: 16px;
+}
+
+.transactionType {
+    display: flex;
+    gap: 10px;
+
+    p {
+font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: white;
+    padding: 5px 15px;
+    
+    border-radius: 6px;
+    }
+    
+}
+
+.total_balance {
+    background-color: rgb(53, 162, 235);
+}
+
+.total_getyourguide {
+    background-color: rgb(30, 165, 84);
+}
+
+.total_partners {
+    background-color: rgb(215, 59, 11);
+}
+
+.pending {
+    background-color: rgb(255, 167, 25);
 }

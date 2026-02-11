@@ -10,9 +10,11 @@ export const fetchTransactions = (page = 1, filters = {}) => ({
     })}&page=${page}`)
 })
 
-export const fetchTransactionsStatistics = () => ({
+export const fetchTransactionsStatistics = (filters = {}) => ({
     type: types.FETCH_TRANSACTION_STATISTICS,
-    payload: axios.get(`${import.meta.env.VITE_API_URL}/api/transactions-statistics`)
+    payload: axios.get(`${import.meta.env.VITE_API_URL}/api/transactions-statistics?${queryString.stringify(filters, {
+        arrayFormat: "index"
+    })}`)
 })
 
 export const fetchTransaction = (id) => ({

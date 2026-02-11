@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import styles from "./Partner.module.css";
-import { Cascader, DatePicker, Input, Popconfirm } from "antd";
+import { Cascader, DatePicker, Input, notification, Popconfirm } from "antd";
 import {
   fetchTransactionPartner,
   liquidateTransactionPartner,
@@ -12,7 +12,9 @@ import { setAuthorizationToken } from "../redux/redux-modules/auth/actions";
 import { connect } from "react-redux";
 
 function Partner(props) {
+  const [api, contextHolder] = notification.useNotification();
   const { transaction } = props;
+
   const [openPopConfirm, setOpenPopConfirm] = useState([false, false]);
   const [passwordInput, setPasswordInput] = useState(undefined);
   const [errorMessage, setErrorMessage] = useState(undefined);
@@ -42,6 +44,10 @@ function Partner(props) {
           setErrorMessage(undefined);
           props.liquidateTransactionPartner(id, { type: type }).then(() => {
             // navigate("/tracker");
+            console.log("liquidated");
+            api.success({
+              title: "Valor liquidado com sucesso!",
+            });
             resetStatus();
           });
         })
@@ -73,7 +79,16 @@ function Partner(props) {
 
   return (
     <div>
-      <h2 style={{ textAlign: "center" }}>{props?.partner?.name}</h2>
+      {contextHolder}
+      <h3 style={{ textAlign: "center" }}>{props?.partner?.name}</h3>
+      <button
+        className={styles.backButton}
+        onClick={() => navigate("/tracker/")}
+      >
+        <img src="/back.svg" alt="Voltar" />
+        Voltar
+      </button>
+
       <section className={styles.form}></section>
 
       <div className={`${styles.card}`}>
@@ -107,7 +122,7 @@ function Partner(props) {
           onConfirm={() => handlePasswordCheck("pending_payment")}
         >
           <button
-            onClick={() => setOpenPopConfirm(true)}
+            onClick={() => setOpenPopConfirm([true, false])}
             className={styles.pending_payment}
             type="submit"
           >
@@ -147,7 +162,7 @@ function Partner(props) {
           onConfirm={() => handlePasswordCheck("pending_income")}
         >
           <button
-            onClick={() => setOpenPopConfirm(true)}
+            onClick={() => setOpenPopConfirm([false, true])}
             className={styles.pending_income}
             type="submit"
           >

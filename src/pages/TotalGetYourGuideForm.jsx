@@ -11,7 +11,7 @@ import { createTransaction } from "../redux/redux-modules/transaction/actions";
 import { connect } from "react-redux";
 import ValueInput from "./common/ValueInput";
 
-function PartnerBalanceForm(props) {
+function TotalGetYourGuideForm(props) {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -20,29 +20,19 @@ function PartnerBalanceForm(props) {
     date: undefined,
     amount: undefined,
     n_clients: undefined,
-    transaction_partner_id: undefined,
-    willPay: undefined,
   });
 
   useEffect(() => {
     props.fetchTransactionCategories({ notNormal: true });
-    props.fetchTransactionPartners();
   }, []);
 
   const handleSubmit = () => {
     setHasSubmitted(true);
-    if (
-      form.category &&
-      form.date &&
-      form.amount &&
-      form.transaction_partner_id &&
-      form.n_clients &&
-      form.willPay !== undefined
-    ) {
+    if (form.category && form.date && form.amount && form.n_clients) {
       props
         .createTransaction({
           ...form,
-          type: "total_partners",
+          type: "total_getyourguide",
           date: new Date(form.date).toISOString().split("T")[0],
         })
         .then((response) => {
@@ -80,40 +70,6 @@ function PartnerBalanceForm(props) {
         Voltar
       </button>
       <section className={styles.form}>
-        <div style={{ width: "100%" }} className={styles.formItem}>
-          <Select
-            status={hasSubmitted && !form.willPay ? "error" : ""}
-            size="large"
-            variant="filled"
-            style={{ width: "100%" }}
-            value={form.willPay}
-            onChange={(value) => setForm({ ...form, willPay: value })}
-            placeholder="Com quem foi pago o serviço?"
-            options={[
-              { value: 1, label: "FastRope" },
-              { value: 0, label: "Parceiro" },
-            ]}
-          />
-        </div>
-        <div className={styles.formItem}>
-          <Select
-            status={hasSubmitted && !form.transaction_partner_id ? "error" : ""}
-            size="large"
-            variant="filled"
-            style={{ width: "100%" }}
-            value={form.transaction_partner_id}
-            fieldNames={{
-              label: "name",
-              value: "id",
-            }}
-            options={props.partners}
-            onChange={(value, selectedOptions) => {
-              setForm({ ...form, transaction_partner_id: value });
-            }}
-            placeholder="Parceiro"
-          />
-        </div>
-
         <div className={styles.formItem}>
           <Cascader
             status={hasSubmitted && !form.category ? "error" : ""}
@@ -153,7 +109,7 @@ function PartnerBalanceForm(props) {
             style={{ width: "100%" }}
             value={form.n_clients}
             onChange={(value) => setForm({ ...form, n_clients: value })}
-            placeholder="Nº de pessoas"
+            placeholder="Nº de clientes"
           />
         </div>
       </section>
@@ -170,55 +126,23 @@ function PartnerBalanceForm(props) {
         />
       </section>
 
-      {form.willPay !== undefined && form.amount !== undefined ? (
+      {form.amount !== undefined ? (
         <section>
           <p>
             <strong>Valor Total:</strong> {form.amount}€
           </p>
           <p>
-            {form.willPay == 1 && (
-              <>
-                <strong>Valor FastRope:</strong>{" "}
-                {parseFloat(form.willPay == 1 ? form.amount * 0.7 : 0).toFixed(
-                  2,
-                )}
-                €
-              </>
-            )}
+            <strong>Valor FastRope (70%):</strong>{" "}
+            {parseFloat(form.amount * 0.7).toFixed(2)}€
           </p>
           <p>
-            {form.willPay == 1 ? (
-              <>
-                <strong>Devemos ao parceiro: </strong>
-                {parseFloat(form.amount * 0.3).toFixed(2)}
-              </>
-            ) : (
-              <>
-                <strong>Parceiro deve: </strong>
-                {parseFloat(0.7 * form.amount).toFixed(2)}
-              </>
-            )}
-            €
+            <strong>Comissão (30%):</strong>{" "}
+            {parseFloat(form.amount * 0.3).toFixed(2)}€
           </p>
         </section>
       ) : null}
 
       <div className={styles.buttonContainer}>
-        {/* <button
-          type="reset"
-          onClick={() =>
-            setForm({
-              description: undefined,
-              category: undefined,
-              date: undefined,
-              type: undefined,
-              total: undefined,
-            })
-          }
-        >
-          Reset
-        </button> */}
-
         <button onClick={handleSubmit} type="submit">
           Submeter
         </button>
@@ -232,8 +156,6 @@ const mapDispatchToProps = (dispatch) => {
     fetchTransactionCategories: (filters) =>
       dispatch(fetchTransactionCategories(filters)),
     createTransaction: (data) => dispatch(createTransaction(data)),
-    fetchTransactionPartners: (filters) =>
-      dispatch(fetchTransactionPartners(filters)),
   };
 };
 
@@ -241,8 +163,10 @@ const mapStateToProps = (state) => {
   return {
     data: state.transactionCategory.data,
     loading: state.transactionCategory.loading,
-    partners: state.transactionPartner.data,
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PartnerBalanceForm);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TotalGetYourGuideForm);
