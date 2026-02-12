@@ -50,7 +50,7 @@ function Tracker(props) {
     props.statistics?.all_time?.pending_payment ?? 0,
   );
 
-  const totalPending = pendingIncome - pendingPayment;
+  const totalPending = pendingIncome + pendingPayment;
 
   return (
     <div className={styles.container}>

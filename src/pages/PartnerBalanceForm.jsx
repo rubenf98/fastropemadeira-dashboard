@@ -130,6 +130,16 @@ function PartnerBalanceForm(props) {
               children: "subcategories",
             }}
             options={props.data}
+            optionRender={(option) => (
+              <span>
+                {option.name}
+                {option.price != null && (
+                  <span style={{ marginLeft: 6, opacity: 0.7 }}>
+                    ({option.price}€)
+                  </span>
+                )}
+              </span>
+            )}
             onChange={(value, selectedOptions) => {
               setForm({ ...form, category: value });
               setOpen(false);
