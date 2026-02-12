@@ -92,6 +92,13 @@ function Transaction(props) {
             <span>{transaction.guide_name}</span>
           </div>
         ) : null}
+
+        {transaction.description ? (
+          <div className={styles.showItem}>
+            <span>Descrição</span>
+            <p>{transaction.description}</p>
+          </div>
+        ) : null}
       </section>
 
       <div className={styles.buttonContainer}>

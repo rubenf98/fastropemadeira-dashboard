@@ -29,6 +29,7 @@
 .showItem {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
     padding: 15px 10px;
     gap: 5px;
     box-sizing: border-box;
@@ -50,8 +51,15 @@
         }
 
         &:last-child {
+            flex: 1;
             text-align: right;
         }
+    }
+
+    p {
+        text-align: left;
+        width: 100%;
+        margin: 0px;
     }
 
     a {
