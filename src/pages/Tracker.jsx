@@ -84,9 +84,7 @@ function Tracker(props) {
       <div className={`${styles.card_content} ${styles.card}`}>
         <Link to="/tracker/partner-balance">
           <h4>Valor parceiros</h4>
-          <span className={styles.total_price}>
-            {props.statistics?.all_time?.total_partners}€
-          </span>
+          <span className={styles.total_price}>{totalPending}€</span>
 
           <ul>
             <li>
@@ -97,11 +95,6 @@ function Tracker(props) {
             <li>
               A pagar:
               <span>{pendingPayment} €</span>
-            </li>
-
-            <li>
-              Total pendente:
-              <span>{totalPending} €</span>
             </li>
           </ul>
         </Link>
@@ -165,6 +158,24 @@ function Tracker(props) {
         />
       </div>
 
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: "16px",
+        }}
+      >
+        <RangePicker
+          value={filters.dateRange}
+          onChange={(value) =>
+            setFilters({
+              ...filters,
+              dateRange: value,
+            })
+          }
+          defaultValue={filters.dateRange}
+        />
+      </div>
       <Link to="/tracker/total-getyourguide">
         <div className={`${styles.balance} ${styles.card}`}>
           <h4>GetYourGuide</h4>

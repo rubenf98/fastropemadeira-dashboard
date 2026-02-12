@@ -14,6 +14,7 @@ import ValueInput from "./common/ValueInput";
 function PartnerBalanceForm(props) {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     description: undefined,
     category: undefined,
@@ -116,6 +117,8 @@ function PartnerBalanceForm(props) {
 
         <div className={styles.formItem}>
           <Cascader
+            open={open}
+            onOpenChange={setOpen}
             status={hasSubmitted && !form.category ? "error" : ""}
             size="large"
             variant="filled"
@@ -129,6 +132,7 @@ function PartnerBalanceForm(props) {
             options={props.data}
             onChange={(value, selectedOptions) => {
               setForm({ ...form, category: value });
+              setOpen(false);
             }}
             placeholder="Categoria"
           />

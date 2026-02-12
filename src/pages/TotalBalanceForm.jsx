@@ -12,6 +12,7 @@ import ValueInput from "./common/ValueInput";
 function TotalBalanceForm(props) {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [extraField, setExtraField] = useState(undefined);
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [form, setForm] = useState({
     description: undefined,
@@ -89,6 +90,8 @@ function TotalBalanceForm(props) {
               filter: cascaderFilter,
               onSearch: (value) => console.log(value),
             }}
+            open={open}
+            onOpenChange={setOpen}
             status={hasSubmitted && !form.category ? "error" : ""}
             size="large"
             variant="filled"
@@ -102,6 +105,7 @@ function TotalBalanceForm(props) {
             options={props.data}
             onChange={(value, selectedOptions) => {
               setForm({ ...form, category: value });
+              setOpen(false);
             }}
             placeholder="Categoria"
           />

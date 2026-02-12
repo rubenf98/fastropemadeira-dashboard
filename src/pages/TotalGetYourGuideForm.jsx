@@ -14,6 +14,7 @@ import ValueInput from "./common/ValueInput";
 function TotalGetYourGuideForm(props) {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     description: undefined,
     category: undefined,
@@ -74,6 +75,8 @@ function TotalGetYourGuideForm(props) {
           <Cascader
             status={hasSubmitted && !form.category ? "error" : ""}
             size="large"
+            open={open}
+            onOpenChange={setOpen}
             variant="filled"
             style={{ width: "100%" }}
             value={form.category}
@@ -85,6 +88,7 @@ function TotalGetYourGuideForm(props) {
             options={props.data}
             onChange={(value, selectedOptions) => {
               setForm({ ...form, category: value });
+              setOpen(false);
             }}
             placeholder="Categoria"
           />
