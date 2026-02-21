@@ -6,7 +6,11 @@ import { fetchTransactions } from "../redux/redux-modules/transaction/actions";
 import { fetchTrackers } from "../redux/redux-modules/tracker/actions";
 import { Cascader, DatePicker, Input, Row, Select, Skeleton } from "antd";
 import { fetchTransactionCategories } from "../redux/redux-modules/transactionCategory/actions";
+import { fetchTransactionPartners } from "../redux/redux-modules/transactionPartner/actions";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import debounce from "debounce";
+const { RangePicker } = DatePicker;
 
 const trackerDictionary = {
   total_balance: "Geral",
@@ -22,7 +26,7 @@ const trackerClassMap = {
 
 function Transactions(props) {
   const [allData, setAllData] = useState([]);
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState({ perPage: 50 });
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -31,13 +35,16 @@ function Transactions(props) {
 
   useEffect(() => {
     props.fetchTransactionCategories();
+    props.fetchTransactionPartners();
   }, []);
 
   useEffect(() => {
     var formattedFilters = { ...filters };
 
-    if (filters.date) {
-      formattedFilters.date = filters.date.format("YYYY-MM-DD");
+    if (filters.dateRange) {
+      formattedFilters.dateRange = undefined;
+      formattedFilters.dateFrom = filters.dateRange[0].format("YYYY-MM-DD");
+      formattedFilters.dateTo = filters.dateRange[1].format("YYYY-MM-DD");
     }
     props.fetchTransactions(page, formattedFilters);
 
@@ -62,6 +69,145 @@ function Transactions(props) {
       return option.name.toLowerCase().includes(inputValue.toLowerCase());
     });
   };
+
+  const handleExportPDF = () => {
+    // ----------------------------------
+    // FILTER OUT PENDING TRANSACTIONS
+    // ----------------------------------
+
+    if (!allData.length) return;
+
+    const doc = new jsPDF("p", "mm", "a4");
+
+    // ----------------------------------
+    // DETERMINE DATE RANGE
+    // ----------------------------------
+
+    let startDate;
+    let endDate;
+
+    if (filters.dateRange && filters.dateRange.length === 2) {
+      startDate = filters.dateRange[0].format("YYYY-MM-DD");
+      endDate = filters.dateRange[1].format("YYYY-MM-DD");
+    } else {
+      const sortedDates = [...allData]
+        .map((t) => new Date(t.date))
+        .sort((a, b) => a - b);
+
+      startDate = sortedDates[0].toISOString().split("T")[0];
+      endDate = sortedDates[sortedDates.length - 1].toISOString().split("T")[0];
+    }
+
+    // ----------------------------------
+    // CALCULATIONS
+    // ----------------------------------
+
+    let totalEntradas = 0;
+    let totalSaidas = 0;
+    let totalClientes = 0;
+    let clientesParceiros = 0;
+
+    let totalPartners = 0;
+    let totalGetYourGuide = 0;
+    let totalGuides = 0;
+
+    allData.forEach((t) => {
+      const amount = Number(t.amount);
+
+      if (amount > 0) totalEntradas += amount;
+      if (amount < 0) totalSaidas += amount;
+
+      totalClientes += Number(t.clients || 0);
+
+      if (t.tracker?.name === "total_partners") {
+        totalPartners += amount;
+        clientesParceiros += Number(t.n_clients || 0);
+      }
+
+      if (t.tracker?.name === "total_getyourguide") {
+        totalGetYourGuide += amount;
+      }
+
+      if (t.tracker?.name === "n_clients") {
+        totalClientes += amount;
+      }
+    });
+
+    const saldoReal = totalEntradas + totalSaidas;
+
+    // ----------------------------------
+    // HEADER
+    // ----------------------------------
+
+    doc.setFontSize(16);
+    doc.text("Relatório Financeiro", 14, 15);
+
+    doc.setFontSize(10);
+    doc.text(`Período: ${startDate} até ${endDate}`, 14, 22);
+    doc.text(`Gerado em: ${new Date().toLocaleDateString()}`, 14, 27);
+
+    // ----------------------------------
+    // TABLE
+    // ----------------------------------
+
+    const tableData = allData.map((t) => [
+      t.date,
+      t.category?.name || "",
+      t.subCategory?.name || "",
+      t.n_clients || "NA",
+      t.partner?.name || "",
+      t.tracker ? trackerDictionary[t.tracker.name] : "",
+      `${Number(t.amount).toFixed(2)}€`,
+      t.pending ? "Pendente" : "",
+    ]);
+
+    autoTable(doc, {
+      startY: 32,
+      head: [
+        [
+          "Data",
+          "Categoria",
+          "Subcategoria",
+          "Nº Clientes",
+          "Parceiro",
+          "Destino",
+
+          "Valor",
+          "",
+        ],
+      ],
+      body: tableData,
+      styles: { fontSize: 8 },
+    });
+
+    // ----------------------------------
+    // SUMMARY
+    // ----------------------------------
+
+    const finalY = doc.lastAutoTable.finalY + 10;
+
+    doc.setFontSize(12);
+    doc.text("Resumo do Período", 14, finalY);
+
+    doc.setFontSize(10);
+
+    const summaryLines = [
+      `Total de Entradas: ${totalEntradas.toFixed(2)}€`,
+      `Total de Saídas: ${Math.abs(totalSaidas).toFixed(2)}€`,
+      `Saldo Real: ${saldoReal.toFixed(2)}€`,
+      `Total Parceiros: ${totalPartners.toFixed(2)}€`,
+      `Total GetYourGuide: ${totalGetYourGuide.toFixed(2)}€`,
+      `Total Guias: ${totalGuides.toFixed(2)}€`,
+      `Número Total de Clientes: ${totalClientes}`,
+      `Clientes Vindos de Parceiros: ${clientesParceiros}`,
+    ];
+
+    summaryLines.forEach((line, index) => {
+      doc.text(line, 14, finalY + 8 + index * 6);
+    });
+
+    doc.save("relatorio-financeiro.pdf");
+  };
   return (
     <div style={{ marginBottom: "50px" }}>
       <section>
@@ -77,12 +223,30 @@ function Transactions(props) {
               500,
             )}
             placeholder="Pesquisar"
-            style={{ width: "100%" }}
+            style={{ width: "49%" }}
           />
-          <DatePicker
+          <Select
+            style={{ width: "49%" }}
+            value={filters.partner}
+            fieldNames={{
+              label: "name",
+              value: "id",
+            }}
+            options={props.partners}
+            onChange={(value, selectedOptions) => {
+              setFilters({ ...filters, partner: value });
+            }}
+            placeholder="Parceiro"
+          />
+          <RangePicker
             allowClear
-            value={filters.date}
-            onChange={(e) => setFilters({ ...filters, date: e })}
+            value={filters.dateRange}
+            onChange={(value) =>
+              setFilters({
+                ...filters,
+                dateRange: value,
+              })
+            }
             placeholder="Data de transação"
             style={{ width: "31%" }}
           />
@@ -117,7 +281,7 @@ function Transactions(props) {
           />
         </Row>
 
-        <Row style={{ margin: "20px 0px " }} justify="end">
+        <Row style={{ margin: "20px 0px ", gap: "20px" }} justify="end">
           <button
             style={{
               padding: "8px 28px ",
@@ -125,10 +289,25 @@ function Transactions(props) {
               cursor: "pointer",
             }}
             type="reset"
-            onClick={() => setFilters({})}
+            onClick={() => setFilters({ perPage: 50 })}
             className={styles.searchButton}
           >
             Reset
+          </button>
+
+          <button
+            style={{
+              padding: "8px 28px ",
+              backgroundColor: "rgb(53, 162, 235)",
+              cursor: "pointer",
+              color: "white",
+              border: "none",
+            }}
+            type="button"
+            onClick={handleExportPDF}
+            className={styles.searchButton}
+          >
+            Exportar
           </button>
         </Row>
       </section>
@@ -184,6 +363,8 @@ const mapDispatchToProps = (dispatch) => {
     fetchTrackers: (filters) => dispatch(fetchTrackers(filters)),
     fetchTransactionCategories: (filters) =>
       dispatch(fetchTransactionCategories(filters)),
+    fetchTransactionPartners: (filters) =>
+      dispatch(fetchTransactionPartners(filters)),
   };
 };
 
@@ -194,6 +375,7 @@ const mapStateToProps = (state) => {
     categories: state.transactionCategory.data,
     loading: state.transaction.loading,
     trackers: state.tracker.data,
+    partners: state.transactionPartner.data,
   };
 };
 
