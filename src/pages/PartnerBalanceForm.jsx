@@ -15,6 +15,8 @@ function PartnerBalanceForm(props) {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [openWillPay, setOpenWillPay] = useState(false);
+  const [openPartner, setOpenPartner] = useState(false);
   const [form, setForm] = useState({
     description: undefined,
     category: undefined,
@@ -88,7 +90,11 @@ function PartnerBalanceForm(props) {
             variant="filled"
             style={{ width: "100%" }}
             value={form.willPay}
-            onChange={(value) => setForm({ ...form, willPay: value })}
+            onChange={(value) => {
+              setForm({ ...form, willPay: value });
+              setOpenWillPay(false);
+            }}
+            onOpenChange={setOpenWillPay}
             placeholder="Com quem foi pago o serviço?"
             options={[
               { value: 1, label: "FastRope" },
@@ -103,6 +109,7 @@ function PartnerBalanceForm(props) {
             variant="filled"
             style={{ width: "100%" }}
             value={form.transaction_partner_id}
+            onOpenChange={setOpenPartner}
             fieldNames={{
               label: "name",
               value: "id",
@@ -110,6 +117,7 @@ function PartnerBalanceForm(props) {
             options={props.partners}
             onChange={(value, selectedOptions) => {
               setForm({ ...form, transaction_partner_id: value });
+              setOpenPartner(false);
             }}
             placeholder="Parceiro"
           />
@@ -142,7 +150,9 @@ function PartnerBalanceForm(props) {
             )}
             onChange={(value, selectedOptions) => {
               setForm({ ...form, category: value });
-              setOpen(false);
+              if (value.length == 2 || !value.length) {
+                setOpen(false);
+              }
             }}
             placeholder="Categoria"
           />

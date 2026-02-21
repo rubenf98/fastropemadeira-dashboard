@@ -13,6 +13,7 @@ function TotalBalanceForm(props) {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [extraField, setExtraField] = useState(undefined);
   const [open, setOpen] = useState(false);
+  const [openTransactionType, setOpenTransactionType] = useState(false);
   const navigate = useNavigate();
   const [form, setForm] = useState({
     description: undefined,
@@ -105,7 +106,9 @@ function TotalBalanceForm(props) {
             options={props.data}
             onChange={(value, selectedOptions) => {
               setForm({ ...form, category: value });
-              setOpen(false);
+              if (value.length == 2 || !value.length) {
+                setOpen(false);
+              }
             }}
             placeholder="Categoria"
           />
@@ -125,12 +128,18 @@ function TotalBalanceForm(props) {
 
         <div className={styles.formItem}>
           <Select
+            open={openTransactionType}
+            onOpenChange={setOpenTransactionType}
+            onChange={(value) => {
+              setForm({ ...form, type: value });
+
+              setOpenTransactionType(false);
+            }}
             status={hasSubmitted && !form.type ? "error" : ""}
             size="large"
             variant="filled"
             style={{ width: "100%" }}
             value={form.type}
-            onChange={(value) => setForm({ ...form, type: value })}
             placeholder="Tipo de transação"
             options={[
               { value: "+", label: "Creditar" },

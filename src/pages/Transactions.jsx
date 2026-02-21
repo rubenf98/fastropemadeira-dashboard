@@ -28,6 +28,9 @@ function Transactions(props) {
   const [allData, setAllData] = useState([]);
   const [filters, setFilters] = useState({ perPage: 50 });
   const [page, setPage] = useState(1);
+  const [openPartner, setOpenPartner] = useState(false);
+  const [openCategory, setOpenCategory] = useState(false);
+  const [openType, setOpenType] = useState(false);
 
   useEffect(() => {
     setPage(1);
@@ -117,7 +120,7 @@ function Transactions(props) {
       if (amount > 0) totalEntradas += amount;
       if (amount < 0) totalSaidas += amount;
 
-      totalClientes += Number(t.clients || 0);
+      totalClientes += Number(t.n_clients || 0);
 
       if (t.tracker?.name === "total_partners") {
         totalPartners += amount;
@@ -131,9 +134,14 @@ function Transactions(props) {
       if (t.tracker?.name === "n_clients") {
         totalClientes += amount;
       }
+
+      if (t.subCategory?.id === 24) {
+        // Pagamento de guias
+        totalGuides += amount;
+      }
     });
 
-    const saldoReal = totalEntradas + totalSaidas;
+    const saldoReal = totalEntradas + totalSaidas - Math.abs(totalGetYourGuide);
 
     // ----------------------------------
     // HEADER
@@ -171,7 +179,6 @@ function Transactions(props) {
           "Nº Clientes",
           "Parceiro",
           "Destino",
-
           "Valor",
           "",
         ],
@@ -226,6 +233,7 @@ function Transactions(props) {
             style={{ width: "49%" }}
           />
           <Select
+            onOpenChange={setOpenPartner}
             style={{ width: "49%" }}
             value={filters.partner}
             fieldNames={{
@@ -235,6 +243,7 @@ function Transactions(props) {
             options={props.partners}
             onChange={(value, selectedOptions) => {
               setFilters({ ...filters, partner: value });
+              setOpenPartner(false);
             }}
             placeholder="Parceiro"
           />
@@ -251,6 +260,8 @@ function Transactions(props) {
             style={{ width: "31%" }}
           />
           <Cascader
+            open={openCategory}
+            onOpenChange={setOpenCategory}
             value={filters.category}
             showSearch={{
               filter: cascaderFilter,
@@ -262,16 +273,25 @@ function Transactions(props) {
               value: "id",
               children: "subcategories",
             }}
-            onChange={(e) => setFilters({ ...filters, category: e })}
+            onChange={(value, selectedOptions) => {
+              setFilters({ ...filters, category: value });
+              if (value.length == 2 || !value.length) {
+                setOpenCategory(false);
+              }
+            }}
             options={props.categories}
             placeholder="Categoria"
             style={{ width: "31%" }}
             changeOnSelect
           />
           <Select
+            onOpenChange={setOpenType}
             value={filters.type}
             allowClear
-            onChange={(e) => setFilters({ ...filters, type: e })}
+            onChange={(e) => {
+              setFilters({ ...filters, type: e });
+              setOpenType(false);
+            }}
             options={[
               { value: ">", label: "Crédito" },
               { value: "<", label: "Débito" },

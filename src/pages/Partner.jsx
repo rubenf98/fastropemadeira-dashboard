@@ -138,10 +138,17 @@ function Partner(props) {
         t.willPay ? (totalPendente += amount) : (totalIncome += amount);
       }
 
+      console.log("Transaction", t.commissionTo);
+
       return [
+        t.id,
         dayjs(t.date).format("DD/MM/YYYY"),
         t.category?.name || "",
-        t.subCategory?.name || "",
+        t.category?.id != 1
+          ? t.subCategory?.name +
+            (t.commission_level ? " - " + t.commission_level : "")
+          : t.subCategory?.name || "",
+        t.n_clients > 0 ? t.n_clients : t.commissionTo?.n_clients || "NA",
         amount.toFixed(2) + "€" || "",
         t.pending ? "Pendente" : "",
       ];
@@ -149,10 +156,12 @@ function Partner(props) {
 
     autoTable(doc, {
       startY: 60,
-      head: [["Data", "Categoria", "Subcategoria", "Valor", ""]],
+      head: [
+        ["#", "Data", "Categoria", "Subcategoria", "Nº Clientes", "Valor", ""],
+      ],
       body: tableData,
       styles: {
-        fontSize: 9,
+        fontSize: 8,
         cellPadding: 2,
       },
       headStyles: {
